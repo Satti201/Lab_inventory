@@ -5,70 +5,61 @@ import 'package:lab_inventory/Models/user_model.dart';
 import 'package:lab_inventory/admin_home_page/add_new_user.dart';
 import 'package:lab_inventory/admin_home_page/view_users_details.dart';
 import 'package:lab_inventory/logout_menu.dart';
+import 'package:lab_inventory/widget/custom_app_bar.dart';
 
 class ViewUser1 extends StatelessWidget {
   final List<RolesModel> _roleList;
   final UserModel userModel;
+
   const ViewUser1(this.userModel, this._roleList, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Colors.lightGreen[800],
-      appBar: AppBar(
+      appBar: CustomAppBar(
         //backgroundColor: Colors.green[900],
         title: const Text('Admin Home'),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          //color: Colors.yellow,
-        ),
-        centerTitle: true,
-        toolbarHeight: 80.0,
-        toolbarOpacity: 0.8,
-        elevation: 0,
         actions: [
           PopupMenuButton<int>(
+            offset: Offset(-10, 40),
             itemBuilder: (context) => [
-              PopupMenuItem<int>(
-                  value: 0,
-                  child: Row(
-                    children: const [
-                      Icon(
-                        Icons.logout,
-                        color: Colors.red,
-                      ),
-                      SizedBox(
-                        width: 7,
-                      ),
-                      Text("Logout")
-                    ],
-                  )),
+              const PopupMenuItem<int>(
+                value: 0,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      color: Colors.deepPurple,
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      "Logout",
+                      style: TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
+              ),
             ],
             onSelected: (item) => LogMenu.selectedItem(context, item),
           ),
         ],
       ),
       body: _ViewUserBody(_roleList),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add New User',
         elevation: 20,
-        //backgroundColor: Colors.lightGreen[900],
-        //foregroundColor: Colors.yellowAccent,
-        child: const Icon(Icons.add),
-        //label: const Text('Add Program'),
+        child: const Icon(
+          Icons.add,
+          color: Colors.deepPurple,
+        ),
         onPressed: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => AddNewUser(_roleList)));
         },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 50.0,
-        ),
-        shape: const CircularNotchedRectangle(),
-        color: Colors.green[900],
       ),
     );
   }
@@ -76,6 +67,7 @@ class ViewUser1 extends StatelessWidget {
 
 class _ViewUserBody extends StatefulWidget {
   final List<RolesModel> _roleList;
+
   const _ViewUserBody(this._roleList, {Key? key}) : super(key: key);
 
   @override
@@ -184,8 +176,8 @@ class _ViewUserBodyState extends State<_ViewUserBody> {
       */
                   },
                   style: ElevatedButton.styleFrom(
-                    onPrimary: Colors.black,
-                    primary: Colors.green,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.deepPurple,
                   ),
                   child: const Text(
                     'Account & Permissions',
@@ -198,23 +190,24 @@ class _ViewUserBodyState extends State<_ViewUserBody> {
                 width: 8,
               ),
               ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _refreshUsersList();
-                      value = null;
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    onPrimary: Colors.black,
-                    primary: Colors.green,
+                onPressed: () {
+                  setState(() {
+                    _refreshUsersList();
+                    value = null;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.deepPurple,
+                ),
+                child: const Text(
+                  'Refresh',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: const Text(
-                    'Refresh',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
+                ),
+              ),
             ],
           ),
           const Divider(
@@ -228,26 +221,22 @@ class _ViewUserBodyState extends State<_ViewUserBody> {
                 child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      //columnSpacing: 60,
                       dividerThickness: 5,
                       decoration: BoxDecoration(
-                          border: Border.all(color: Colors.purple, width: 1)),
-                      /*dataRowColor: MaterialStateColor.resolveWith(
-                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
-                          ? Colors.blue
-                          : Colors.grey),*/
-                      dataRowHeight: 80,
+                          border: Border.all(color: Colors.grey, width: 1)),
+                      dataRowMinHeight: 40,
                       dataTextStyle: const TextStyle(
-                          fontStyle: FontStyle.italic,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                      headingRowColor: WidgetStateColor.resolveWith(
+                          (states) => Colors.transparent),
+                      headingRowHeight: 40,
+                      headingTextStyle: const TextStyle(
+                          fontWeight: FontWeight.w500,
                           color: Colors.black,
                           fontSize: 16),
-                      headingRowColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.grey),
-                      headingRowHeight: 80,
-                      headingTextStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 18),
                       horizontalMargin: 10,
                       showBottomBorder: true,
                       showCheckboxColumn: false,

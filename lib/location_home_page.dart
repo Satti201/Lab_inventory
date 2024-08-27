@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lab_inventory/Api_Services/api_services.dart';
 import 'package:lab_inventory/Models/location_categorie_model.dart';
 import 'package:lab_inventory/view_locations.dart';
+import 'package:lab_inventory/widget/custom_app_bar.dart';
 
 import 'add_new_location_category.dart';
 
@@ -40,20 +41,20 @@ class _LocationHomePageState extends State<LocationHomePage> {
         DataCell(
           PopupMenuButton<int>(
             itemBuilder: (context) => [
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                   value: 0,
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(
                         Icons.delete,
                         color: Colors.red,
                       ),
                     ],
                   )),
-              PopupMenuItem<int>(
+              const PopupMenuItem<int>(
                   value: 1,
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(
                         Icons.edit,
                         color: Colors.blue,
@@ -64,7 +65,8 @@ class _LocationHomePageState extends State<LocationHomePage> {
             onSelected: (item) async {
               switch (item) {
                 case 0:
-                  String str = await api.deleteLocationCategory(lcModel.lcId.toString());
+                  String str =
+                      await api.deleteLocationCategory(lcModel.lcId.toString());
                   _showToast(context, str);
                   break;
                 case 1:
@@ -80,52 +82,34 @@ class _LocationHomePageState extends State<LocationHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        //backgroundColor: Colors.green[900],
-        title: const Text('Location'),
-        titleTextStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 24,
-        ),
-        centerTitle: true,
-        toolbarHeight: 80.0,
-        toolbarOpacity: 0.8,
-        elevation: 0,
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(
+        title: Text('Location'),
       ),
-      body: Material(
-        color: Colors.grey[200],
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _showLocationCategoryColumn(),
-            ],
-          ),
+      body: Container(
+        margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _showLocationCategoryColumn(),
+          ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        elevation: 2.0,
-        backgroundColor: Colors.indigo[900],
-        //foregroundColor: Colors.yellowAccent,
-        child: const Icon(Icons.add),
-        // label: const Text('Add Plo'),
+        elevation: 20,
+        child: const Icon(
+          Icons.add,
+          color: Colors.deepPurple,
+        ),
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => const AddNewLocationCategory()));
         },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 50.0,
-        ),
-        shape: const CircularNotchedRectangle(),
-        color: Colors.green[900],
       ),
     );
   }

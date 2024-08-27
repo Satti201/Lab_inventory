@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "999517528927",
+    "project_id": "labinventory-bda8a",
+    "storage_bucket": "labinventory-bda8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999517528927:android:a9d4e5f795a685a74f0cea",
+        "android_client_info": {
+          "package_name": "com.example.lab_inventory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClP0txgu7Sf8wB4mZKweuIi2it4bJVcLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

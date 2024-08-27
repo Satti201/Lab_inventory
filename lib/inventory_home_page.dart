@@ -3,6 +3,8 @@ import 'package:lab_inventory/Api_Services/api_services.dart';
 import 'package:lab_inventory/Models/container_model.dart';
 import 'package:lab_inventory/Models/location_model.dart';
 import 'package:lab_inventory/item_details.dart';
+import 'package:lab_inventory/widget/custom_app_bar.dart';
+import 'package:lab_inventory/widget/custom_text_field.dart';
 
 class InventoryHomePage extends StatefulWidget {
   const InventoryHomePage({Key? key}) : super(key: key);
@@ -12,26 +14,29 @@ class InventoryHomePage extends StatefulWidget {
 }
 
 class _InventoryHomePageState extends State<InventoryHomePage> {
-  ApiServices api=ApiServices();
-  final stockController=TextEditingController();
-  String qSearch='';
-  List<ContainerModel>  _stockList=[];
-  List<ContainerModel>  _newStockList=[];
-  List<ContainerModel>  _usedList=[];
-  List<ContainerModel>  _newUsedList=[];
-  List<ContainerModel>  _faultyList=[];
-  List<ContainerModel>  _newFaultyList=[];
-  List<ContainerModel>  _discardList=[];
-  List<ContainerModel>  _newDiscardList=[];
-  List<LocationModel> _locationList=[];
+  ApiServices api = ApiServices();
+  final stockController = TextEditingController();
+  String qSearch = '';
+  List<ContainerModel> _stockList = [];
+  List<ContainerModel> _newStockList = [];
+  List<ContainerModel> _usedList = [];
+  List<ContainerModel> _newUsedList = [];
+  List<ContainerModel> _faultyList = [];
+  List<ContainerModel> _newFaultyList = [];
+  List<ContainerModel> _discardList = [];
+  List<ContainerModel> _newDiscardList = [];
+  List<LocationModel> _locationList = [];
 
   DataRow _createRow(ContainerModel containerModel) {
     return DataRow(
-      key:  ValueKey(containerModel.containerId),
+      key: ValueKey(containerModel.containerId),
       onSelectChanged: (selected) {
-        String locationName=_getLocationName(containerModel.locationId);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ItemDetails(containerModel, locationName)));
+        String locationName = _getLocationName(containerModel.locationId);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ItemDetails(containerModel, locationName)));
       },
       cells: [
         DataCell(
@@ -53,8 +58,6 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     );
   }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -64,20 +67,21 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
       _refreshFaultyList();
       _refreshDiscardList();
       _refreshLocationList();
-      _newStockList=[];
+      _newStockList = [];
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        appBar: AppBar(
-          bottom: const TabBar(
-            labelColor: Colors.redAccent,
-            unselectedLabelColor: Colors.white,
+        backgroundColor: Colors.white,
+        appBar: const CustomAppBar(
+          height: 100,
+          bottom: TabBar(
+            labelColor: Colors.deepPurple,
+            unselectedLabelColor: Colors.black,
             indicatorSize: TabBarIndicatorSize.label,
             indicator: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -112,15 +116,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
             ],
           ),
           //backgroundColor: Colors.green[900],
-          title: const Text('Inventory'),
-          titleTextStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-          centerTitle: true,
-          toolbarHeight: 80.0,
-          toolbarOpacity: 0.8,
-          elevation: 0,
+          title: Text('Inventory'),
         ),
         body: TabBarView(
           children: [
@@ -134,111 +130,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     );
   }
 
-  _discard()=>Container(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            decoration: InputDecoration(
-              fillColor: Colors.white70,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              contentPadding: const EdgeInsets.all(5.0),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              labelText: 'Search',
-              labelStyle: const TextStyle(
-                letterSpacing: 2.0,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              hintText: 'Search Here',
-              hintStyle: const TextStyle(
-                letterSpacing: 2.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            controller: stockController,
-            keyboardType: TextInputType.text,
-            onChanged: (value){
-              setState(() {
-                qSearch=value;/*
-                    stockController.addListener(() {
-                      _newStockList=_getNewStockList(qSearch);});*/
-                _newDiscardList=_getNewDiscardList(qSearch);
-              });
-            },
-            onSubmitted: (value){
-            },
-          ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        qSearch==''?_showDiscard():_showDiscardSearchedData(),
-      ],
-    ),
-  );
-
-  _used() => Container(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            decoration: InputDecoration(
-              fillColor: Colors.white70,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              contentPadding: const EdgeInsets.all(5.0),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              labelText: 'Search',
-              labelStyle: const TextStyle(
-                letterSpacing: 2.0,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              hintText: 'Search Here',
-              hintStyle: const TextStyle(
-                letterSpacing: 2.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            controller: stockController,
-            keyboardType: TextInputType.text,
-            onChanged: (value){
-              setState(() {
-                qSearch=value;/*
-                    stockController.addListener(() {
-                      _newStockList=_getNewStockList(qSearch);});*/
-                _newUsedList=_getNewUsedList(qSearch);
-              });
-            },
-            onSubmitted: (value){
-            },
-          ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        qSearch==''?_showUsed():_showUsedSearchedData(),
-      ],
-    ),
-  );
-
-  _stock() => Container(
+  _discard() => Container(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
@@ -270,243 +162,123 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
                 ),
                 controller: stockController,
                 keyboardType: TextInputType.text,
-                onChanged: (value){
+                onChanged: (value) {
                   setState(() {
-                    qSearch=value;/*
+                    qSearch =
+                        value; /*
                     stockController.addListener(() {
                       _newStockList=_getNewStockList(qSearch);});*/
-                    _newStockList=_getNewStockList(qSearch);
+                    _newDiscardList = _getNewDiscardList(qSearch);
                   });
                 },
-                onSubmitted: (value){
+                onSubmitted: (value) {},
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            qSearch == '' ? _showDiscard() : _showDiscardSearchedData(),
+          ],
+        ),
+      );
+
+  _used() => Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomTextField(
+                labelText: 'Search',
+                fontWeight: FontWeight.w500,
+                hintText: 'Search Here',
+                controller: stockController,
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Colors.deepPurple,
+                ),
+                keyboardType: TextInputType.text,
+                fontSize: 16,
+                onChanged: (value) {
+                  setState(() {
+                    qSearch =
+                        value; /*
+                    stockController.addListener(() {
+                      _newStockList=_getNewStockList(qSearch);});*/
+                    _newUsedList = _getNewUsedList(qSearch);
+                  });
                 },
               ),
             ),
             const SizedBox(
               height: 5,
             ),
-            qSearch==''?_showStock():_showStockSearchedData(),
+            qSearch == '' ? _showUsed() : _showUsedSearchedData(),
           ],
         ),
       );
 
-  _showStockSearchedData()=>Expanded(
-    child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          //columnSpacing: 60,
-          dividerThickness: 5,
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple, width: 1)),
-          /*dataRowColor: MaterialStateColor.resolveWith(
-                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
-                          ? Colors.blue
-                          : Colors.grey),*/
-          dataRowHeight: 80,
-          dataTextStyle: const TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-              fontSize: 16),
-          headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.grey),
-          headingRowHeight: 80,
-          headingTextStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontSize: 18),
-          horizontalMargin: 10,
-          showBottomBorder: true,
-          showCheckboxColumn: false,
-          columns: const [
-            DataColumn(
-              label: Text('Item Name'),
-              numeric: false,
-              tooltip: 'Name',
+  _stock() => Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomTextField(
+                labelText: 'Search',
+                fontWeight: FontWeight.w500,
+                hintText: 'Search Here',
+                controller: stockController,
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Colors.deepPurple,
+                ),
+                keyboardType: TextInputType.text,
+                fontSize: 16,
+                onChanged: (value) {
+                  setState(() {
+                    qSearch =
+                        value; /*
+                    stockController.addListener(() {
+                      _newStockList=_getNewStockList(qSearch);});*/
+                    _newStockList = _getNewStockList(qSearch);
+                  });
+                },
+              ),
             ),
-            DataColumn(
-              label: Text('Company'),
-              numeric: false,
-              tooltip: 'Company',
+            const SizedBox(
+              height: 5,
             ),
-            DataColumn(
-              label: Text('T.Amount'),
-              numeric: false,
-              tooltip: 'Total Amount',
-            ),
+            qSearch == '' ? _showStock() : _showStockSearchedData(),
           ],
-          rows: _newStockList.map((e) => _createRow(e)).toList(),
-        )),
-  );
+        ),
+      );
 
-  _showFaultySearchedData()=>Expanded(
-    child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          //columnSpacing: 60,
-          dividerThickness: 5,
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple, width: 1)),
-          /*dataRowColor: MaterialStateColor.resolveWith(
-                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
-                          ? Colors.blue
-                          : Colors.grey),*/
-          dataRowHeight: 80,
-          dataTextStyle: const TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-              fontSize: 16),
-          headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.grey),
-          headingRowHeight: 80,
-          headingTextStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontSize: 18),
-          horizontalMargin: 10,
-          showBottomBorder: true,
-          showCheckboxColumn: false,
-          columns: const [
-            DataColumn(
-              label: Text('Item Name'),
-              numeric: false,
-              tooltip: 'Name',
-            ),
-            DataColumn(
-              label: Text('Company'),
-              numeric: false,
-              tooltip: 'Company',
-            ),
-            DataColumn(
-              label: Text('T.Amount'),
-              numeric: false,
-              tooltip: 'Total Amount',
-            ),
-          ],
-          rows: _newFaultyList.map((e) => _createRow(e)).toList(),
-        )),
-  );
-
-  _showDiscardSearchedData()=>Expanded(
-    child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          //columnSpacing: 60,
-          dividerThickness: 5,
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple, width: 1)),
-          /*dataRowColor: MaterialStateColor.resolveWith(
-                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
-                          ? Colors.blue
-                          : Colors.grey),*/
-          dataRowHeight: 80,
-          dataTextStyle: const TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-              fontSize: 16),
-          headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.grey),
-          headingRowHeight: 80,
-          headingTextStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontSize: 18),
-          horizontalMargin: 10,
-          showBottomBorder: true,
-          showCheckboxColumn: false,
-          columns: const [
-            DataColumn(
-              label: Text('Item Name'),
-              numeric: false,
-              tooltip: 'Name',
-            ),
-            DataColumn(
-              label: Text('Company'),
-              numeric: false,
-              tooltip: 'Company',
-            ),
-            DataColumn(
-              label: Text('T.Amount'),
-              numeric: false,
-              tooltip: 'Total Amount',
-            ),
-          ],
-          rows: _newDiscardList.map((e) => _createRow(e)).toList(),
-        )),
-  );
-
-
-  _showUsedSearchedData()=>Expanded(
-    child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          //columnSpacing: 60,
-          dividerThickness: 5,
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple, width: 1)),
-          /*dataRowColor: MaterialStateColor.resolveWith(
-                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
-                          ? Colors.blue
-                          : Colors.grey),*/
-          dataRowHeight: 80,
-          dataTextStyle: const TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-              fontSize: 16),
-          headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.grey),
-          headingRowHeight: 80,
-          headingTextStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontSize: 18),
-          horizontalMargin: 10,
-          showBottomBorder: true,
-          showCheckboxColumn: false,
-          columns: const [
-            DataColumn(
-              label: Text('Item Name'),
-              numeric: false,
-              tooltip: 'Name',
-            ),
-            DataColumn(
-              label: Text('Company'),
-              numeric: false,
-              tooltip: 'Company',
-            ),
-            DataColumn(
-              label: Text('T.Amount'),
-              numeric: false,
-              tooltip: 'Total Amount',
-            ),
-          ],
-          rows: _newUsedList.map((e) => _createRow(e)).toList(),
-        )),
-  );
-  //*****************************
-  _showStock() => Expanded(
-    child: FutureBuilder<List<ContainerModel>>(
-      future: api.fetchStock(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SingleChildScrollView(
+  _showStockSearchedData() => Expanded(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: DataTable(
-              columnSpacing: 10,
+              //columnSpacing: 60,
               dividerThickness: 5,
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.purple, width: 1)),
+              /*dataRowColor: MaterialStateColor.resolveWith(
+                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
+                          ? Colors.blue
+                          : Colors.grey),*/
               dataRowHeight: 80,
               dataTextStyle: const TextStyle(
                   fontStyle: FontStyle.italic,
                   color: Colors.black,
                   fontSize: 16),
               headingRowColor:
-              MaterialStateColor.resolveWith((states) => Colors.grey),
+                  MaterialStateColor.resolveWith((states) => Colors.grey),
               headingRowHeight: 80,
               headingTextStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                   fontSize: 18),
-              //horizontalMargin: 10,
+              horizontalMargin: 10,
               showBottomBorder: true,
               showCheckboxColumn: false,
               columns: const [
@@ -526,246 +298,433 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
                   tooltip: 'Total Amount',
                 ),
               ],
-              rows: snapshot.data!.map((e) => _createRow(e)).toList(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
+              rows: _newStockList.map((e) => _createRow(e)).toList(),
+            )),
+      );
 
-        // By default, show a loading spinner.
-        return const Center(child: CircularProgressIndicator());
-      },
-    ),
-  );
+  _showFaultySearchedData() => Expanded(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              //columnSpacing: 60,
+              dividerThickness: 5,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.purple, width: 1)),
+              /*dataRowColor: MaterialStateColor.resolveWith(
+                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
+                          ? Colors.blue
+                          : Colors.grey),*/
+              dataRowHeight: 80,
+              dataTextStyle: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.black,
+                  fontSize: 16),
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.grey),
+              headingRowHeight: 80,
+              headingTextStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 18),
+              horizontalMargin: 10,
+              showBottomBorder: true,
+              showCheckboxColumn: false,
+              columns: const [
+                DataColumn(
+                  label: Text('Item Name'),
+                  numeric: false,
+                  tooltip: 'Name',
+                ),
+                DataColumn(
+                  label: Text('Company'),
+                  numeric: false,
+                  tooltip: 'Company',
+                ),
+                DataColumn(
+                  label: Text('T.Amount'),
+                  numeric: false,
+                  tooltip: 'Total Amount',
+                ),
+              ],
+              rows: _newFaultyList.map((e) => _createRow(e)).toList(),
+            )),
+      );
 
+  _showDiscardSearchedData() => Expanded(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              //columnSpacing: 60,
+              dividerThickness: 5,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.purple, width: 1)),
+              /*dataRowColor: MaterialStateColor.resolveWith(
+                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
+                          ? Colors.blue
+                          : Colors.grey),*/
+              dataRowHeight: 80,
+              dataTextStyle: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.black,
+                  fontSize: 16),
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.grey),
+              headingRowHeight: 80,
+              headingTextStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 18),
+              horizontalMargin: 10,
+              showBottomBorder: true,
+              showCheckboxColumn: false,
+              columns: const [
+                DataColumn(
+                  label: Text('Item Name'),
+                  numeric: false,
+                  tooltip: 'Name',
+                ),
+                DataColumn(
+                  label: Text('Company'),
+                  numeric: false,
+                  tooltip: 'Company',
+                ),
+                DataColumn(
+                  label: Text('T.Amount'),
+                  numeric: false,
+                  tooltip: 'Total Amount',
+                ),
+              ],
+              rows: _newDiscardList.map((e) => _createRow(e)).toList(),
+            )),
+      );
+
+  _showUsedSearchedData() => Expanded(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              //columnSpacing: 60,
+              dividerThickness: 5,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.purple, width: 1)),
+              /*dataRowColor: MaterialStateColor.resolveWith(
+                      (Set<MaterialState> states) => states.contains(MaterialState.selected)
+                          ? Colors.blue
+                          : Colors.grey),*/
+              dataRowHeight: 80,
+              dataTextStyle: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.black,
+                  fontSize: 16),
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => Colors.grey),
+              headingRowHeight: 80,
+              headingTextStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 18),
+              horizontalMargin: 10,
+              showBottomBorder: true,
+              showCheckboxColumn: false,
+              columns: const [
+                DataColumn(
+                  label: Text('Item Name'),
+                  numeric: false,
+                  tooltip: 'Name',
+                ),
+                DataColumn(
+                  label: Text('Company'),
+                  numeric: false,
+                  tooltip: 'Company',
+                ),
+                DataColumn(
+                  label: Text('T.Amount'),
+                  numeric: false,
+                  tooltip: 'Total Amount',
+                ),
+              ],
+              rows: _newUsedList.map((e) => _createRow(e)).toList(),
+            )),
+      );
+
+  //*****************************
+  _showStock() => Expanded(
+        child: FutureBuilder<List<ContainerModel>>(
+          future: api.fetchStock(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: DataTable(
+                  columnSpacing: 10,
+                  dividerThickness: 5,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.purple, width: 1)),
+                  dataRowHeight: 80,
+                  dataTextStyle: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      fontSize: 16),
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => Colors.grey),
+                  headingRowHeight: 80,
+                  headingTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18),
+                  //horizontalMargin: 10,
+                  showBottomBorder: true,
+                  showCheckboxColumn: false,
+                  columns: const [
+                    DataColumn(
+                      label: Text('Item Name'),
+                      numeric: false,
+                      tooltip: 'Name',
+                    ),
+                    DataColumn(
+                      label: Text('Company'),
+                      numeric: false,
+                      tooltip: 'Company',
+                    ),
+                    DataColumn(
+                      label: Text('T.Amount'),
+                      numeric: false,
+                      tooltip: 'Total Amount',
+                    ),
+                  ],
+                  rows: snapshot.data!.map((e) => _createRow(e)).toList(),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+
+            // By default, show a loading spinner.
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      );
 
   //*****************************
   _showUsed() => Expanded(
-    child: FutureBuilder<List<ContainerModel>>(
-      future: api.fetchUsed(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SingleChildScrollView(
-            child: DataTable(
-              columnSpacing: 10,
-              dividerThickness: 5,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.purple, width: 1)),
-              dataRowHeight: 80,
-              dataTextStyle: const TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black,
-                  fontSize: 16),
-              headingRowColor:
-              MaterialStateColor.resolveWith((states) => Colors.grey),
-              headingRowHeight: 80,
-              headingTextStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 18),
-              //horizontalMargin: 10,
-              showBottomBorder: true,
-              showCheckboxColumn: false,
-              columns: const [
-                DataColumn(
-                  label: Text('Item Name'),
-                  numeric: false,
-                  tooltip: 'Name',
+        child: FutureBuilder<List<ContainerModel>>(
+          future: api.fetchUsed(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: DataTable(
+                  columnSpacing: 10,
+                  dividerThickness: 5,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.purple, width: 1)),
+                  dataRowHeight: 80,
+                  dataTextStyle: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      fontSize: 16),
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => Colors.grey),
+                  headingRowHeight: 80,
+                  headingTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18),
+                  //horizontalMargin: 10,
+                  showBottomBorder: true,
+                  showCheckboxColumn: false,
+                  columns: const [
+                    DataColumn(
+                      label: Text('Item Name'),
+                      numeric: false,
+                      tooltip: 'Name',
+                    ),
+                    DataColumn(
+                      label: Text('Company'),
+                      numeric: false,
+                      tooltip: 'Company',
+                    ),
+                    DataColumn(
+                      label: Text('T.Amount'),
+                      numeric: false,
+                      tooltip: 'Total Amount',
+                    ),
+                  ],
+                  rows: snapshot.data!.map((e) => _createRow(e)).toList(),
                 ),
-                DataColumn(
-                  label: Text('Company'),
-                  numeric: false,
-                  tooltip: 'Company',
-                ),
-                DataColumn(
-                  label: Text('T.Amount'),
-                  numeric: false,
-                  tooltip: 'Total Amount',
-                ),
-              ],
-              rows: snapshot.data!.map((e) => _createRow(e)).toList(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
 
-        // By default, show a loading spinner.
-        return const Center(child: CircularProgressIndicator());
-      },
-    ),
-  );
-
+            // By default, show a loading spinner.
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      );
 
   //*****************************
   _showFaulty() => Expanded(
-    child: FutureBuilder<List<ContainerModel>>(
-      future: api.fetchFaulty(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SingleChildScrollView(
-            child: DataTable(
-              columnSpacing: 10,
-              dividerThickness: 5,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.purple, width: 1)),
-              dataRowHeight: 80,
-              dataTextStyle: const TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black,
-                  fontSize: 16),
-              headingRowColor:
-              MaterialStateColor.resolveWith((states) => Colors.grey),
-              headingRowHeight: 80,
-              headingTextStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 18),
-              //horizontalMargin: 10,
-              showBottomBorder: true,
-              showCheckboxColumn: false,
-              columns: const [
-                DataColumn(
-                  label: Text('Item Name'),
-                  numeric: false,
-                  tooltip: 'Name',
+        child: FutureBuilder<List<ContainerModel>>(
+          future: api.fetchFaulty(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: DataTable(
+                  columnSpacing: 10,
+                  dividerThickness: 5,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.purple, width: 1)),
+                  dataRowHeight: 80,
+                  dataTextStyle: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      fontSize: 16),
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => Colors.grey),
+                  headingRowHeight: 80,
+                  headingTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18),
+                  //horizontalMargin: 10,
+                  showBottomBorder: true,
+                  showCheckboxColumn: false,
+                  columns: const [
+                    DataColumn(
+                      label: Text('Item Name'),
+                      numeric: false,
+                      tooltip: 'Name',
+                    ),
+                    DataColumn(
+                      label: Text('Company'),
+                      numeric: false,
+                      tooltip: 'Company',
+                    ),
+                    DataColumn(
+                      label: Text('T.Amount'),
+                      numeric: false,
+                      tooltip: 'Total Amount',
+                    ),
+                  ],
+                  rows: snapshot.data!.map((e) => _createRow(e)).toList(),
                 ),
-                DataColumn(
-                  label: Text('Company'),
-                  numeric: false,
-                  tooltip: 'Company',
-                ),
-                DataColumn(
-                  label: Text('T.Amount'),
-                  numeric: false,
-                  tooltip: 'Total Amount',
-                ),
-              ],
-              rows: snapshot.data!.map((e) => _createRow(e)).toList(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
 
-        // By default, show a loading spinner.
-        return const Center(child: CircularProgressIndicator());
-      },
-    ),
-  );
-
+            // By default, show a loading spinner.
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      );
 
   //*****************************
   _showDiscard() => Expanded(
-    child: FutureBuilder<List<ContainerModel>>(
-      future: api.fetchDiscard(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SingleChildScrollView(
-            child: DataTable(
-              columnSpacing: 10,
-              dividerThickness: 5,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.purple, width: 1)),
-              dataRowHeight: 80,
-              dataTextStyle: const TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black,
-                  fontSize: 16),
-              headingRowColor:
-              MaterialStateColor.resolveWith((states) => Colors.grey),
-              headingRowHeight: 80,
-              headingTextStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 18),
-              //horizontalMargin: 10,
-              showBottomBorder: true,
-              showCheckboxColumn: false,
-              columns: const [
-                DataColumn(
-                  label: Text('Item Name'),
-                  numeric: false,
-                  tooltip: 'Name',
+        child: FutureBuilder<List<ContainerModel>>(
+          future: api.fetchDiscard(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: DataTable(
+                  columnSpacing: 10,
+                  dividerThickness: 5,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.purple, width: 1)),
+                  dataRowHeight: 80,
+                  dataTextStyle: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      fontSize: 16),
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => Colors.grey),
+                  headingRowHeight: 80,
+                  headingTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18),
+                  //horizontalMargin: 10,
+                  showBottomBorder: true,
+                  showCheckboxColumn: false,
+                  columns: const [
+                    DataColumn(
+                      label: Text('Item Name'),
+                      numeric: false,
+                      tooltip: 'Name',
+                    ),
+                    DataColumn(
+                      label: Text('Company'),
+                      numeric: false,
+                      tooltip: 'Company',
+                    ),
+                    DataColumn(
+                      label: Text('T.Amount'),
+                      numeric: false,
+                      tooltip: 'Total Amount',
+                    ),
+                  ],
+                  rows: snapshot.data!.map((e) => _createRow(e)).toList(),
                 ),
-                DataColumn(
-                  label: Text('Company'),
-                  numeric: false,
-                  tooltip: 'Company',
-                ),
-                DataColumn(
-                  label: Text('T.Amount'),
-                  numeric: false,
-                  tooltip: 'Total Amount',
-                ),
-              ],
-              rows: snapshot.data!.map((e) => _createRow(e)).toList(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
 
-        // By default, show a loading spinner.
-        return const Center(child: CircularProgressIndicator());
-      },
-    ),
-  );
-
+            // By default, show a loading spinner.
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      );
 
   _faulty() => Container(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            decoration: InputDecoration(
-              fillColor: Colors.white70,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              contentPadding: const EdgeInsets.all(5.0),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              labelText: 'Search',
-              labelStyle: const TextStyle(
-                letterSpacing: 2.0,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              hintText: 'Search Here',
-              hintStyle: const TextStyle(
-                letterSpacing: 2.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            controller: stockController,
-            keyboardType: TextInputType.text,
-            onChanged: (value){
-              setState(() {
-                qSearch=value;/*
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  fillColor: Colors.white70,
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  contentPadding: const EdgeInsets.all(5.0),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                  labelText: 'Search',
+                  labelStyle: const TextStyle(
+                    letterSpacing: 2.0,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  hintText: 'Search Here',
+                  hintStyle: const TextStyle(
+                    letterSpacing: 2.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                controller: stockController,
+                keyboardType: TextInputType.text,
+                onChanged: (value) {
+                  setState(() {
+                    qSearch =
+                        value; /*
                     stockController.addListener(() {
                       _newStockList=_getNewStockList(qSearch);});*/
-                 _newFaultyList=_getNewFaultyList(qSearch);
-              });
-            },
-            onSubmitted: (value){
-            },
-          ),
+                    _newFaultyList = _getNewFaultyList(qSearch);
+                  });
+                },
+                onSubmitted: (value) {},
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            qSearch == '' ? _showFaulty() : _showFaultySearchedData(),
+          ],
         ),
-        const SizedBox(
-          height: 5,
-        ),
-        qSearch==''?_showFaulty():_showFaultySearchedData(),
-      ],
-    ),
-  );
-
+      );
 
   _refreshStockList() async {
     List<ContainerModel> x = await api.fetchStock();
@@ -773,6 +732,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
       _stockList = x;
     });
   }
+
   _refreshUsedList() async {
     List<ContainerModel> x = await api.fetchUsed();
     setState(() {
@@ -794,22 +754,22 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     });
   }
 
-  _getLocationName(int lid){
-    for(int i=0; i<_locationList.length; i++){
-      if(_locationList[i].lId==lid){
+  _getLocationName(int lid) {
+    for (int i = 0; i < _locationList.length; i++) {
+      if (_locationList[i].lId == lid) {
         return _locationList[i].lName;
       }
     }
     return '';
   }
 
-  List<ContainerModel> _getNewStockList(String data){
-    List<ContainerModel> x=[];
-    _newStockList=[];
-    x=_stockList;
-    for(int i=0; i<data.length; i++){
-      for(int j=0; j<x.length; j++){
-        if(data[i]!=_stockList[j].itemName[i]){
+  List<ContainerModel> _getNewStockList(String data) {
+    List<ContainerModel> x = [];
+    _newStockList = [];
+    x = _stockList;
+    for (int i = 0; i < data.length; i++) {
+      for (int j = 0; j < x.length; j++) {
+        if (data[i] != _stockList[j].itemName[i]) {
           x.remove(x[j]);
         }
       }
@@ -817,14 +777,13 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     return x;
   }
 
-
-  List<ContainerModel> _getNewUsedList(String data){
-    List<ContainerModel> x=[];
-    _newUsedList=[];
-    x=_usedList;
-    for(int i=0; i<data.length; i++){
-      for(int j=0; j<x.length; j++){
-        if(data[i]!=_usedList[j].itemName[i]){
+  List<ContainerModel> _getNewUsedList(String data) {
+    List<ContainerModel> x = [];
+    _newUsedList = [];
+    x = _usedList;
+    for (int i = 0; i < data.length; i++) {
+      for (int j = 0; j < x.length; j++) {
+        if (data[i] != _usedList[j].itemName[i]) {
           x.remove(x[j]);
         }
       }
@@ -832,13 +791,13 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     return x;
   }
 
-  List<ContainerModel> _getNewFaultyList(String data){
-    List<ContainerModel> x=[];
-    _newFaultyList=[];
-    x=_faultyList;
-    for(int i=0; i<data.length; i++){
-      for(int j=0; j<x.length; j++){
-        if(data[i]!=_faultyList[j].itemName[i]){
+  List<ContainerModel> _getNewFaultyList(String data) {
+    List<ContainerModel> x = [];
+    _newFaultyList = [];
+    x = _faultyList;
+    for (int i = 0; i < data.length; i++) {
+      for (int j = 0; j < x.length; j++) {
+        if (data[i] != _faultyList[j].itemName[i]) {
           x.remove(x[j]);
         }
       }
@@ -846,14 +805,13 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     return x;
   }
 
-
-  List<ContainerModel> _getNewDiscardList(String data){
-    List<ContainerModel> x=[];
-    _newDiscardList=[];
-    x=_discardList;
-    for(int i=0; i<data.length; i++){
-      for(int j=0; j<x.length; j++){
-        if(data[i]!=_discardList[j].itemName[i]){
+  List<ContainerModel> _getNewDiscardList(String data) {
+    List<ContainerModel> x = [];
+    _newDiscardList = [];
+    x = _discardList;
+    for (int i = 0; i < data.length; i++) {
+      for (int j = 0; j < x.length; j++) {
+        if (data[i] != _discardList[j].itemName[i]) {
           x.remove(x[j]);
         }
       }
@@ -867,5 +825,4 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
       _locationList = x;
     });
   }
-
 }
